@@ -3,10 +3,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from core.views.views import *
 from core.views.hotel_food_cart import *
+from core.views.order_payment_views import *
 var = DefaultRouter()
 var.register(r'register', Register)
 var.register(r'addcart', Add_Cart, basename='addcart')
-#var.register(r'authlogin', Login, basename='addcart')
+var.register(r'addorder', Order_add, basename='addorder')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,9 +19,13 @@ urlpatterns = [
     path('foods/<int:pk>/', Food_detail_view.as_view(), name="foods_detail"),    
     path('pincodes/<int:pk>/', Pincode_Detail_view.as_view(), name="pincodes_detail"),
     path('hotels/<int:pk>/', Hotel_detail_view.as_view(), name="hotels_detail"),
+    path('cartdetail/', Cart_Detail_Delete.as_view(), name='cartdetail'),
         #List_view Urls
     path('hotels/', Hotel_List_view.as_view(), name="hotels"),
     path('cartlist/', Cart_List.as_view(), name='cartlist')
+
+    
+
 ]
 
 urlpatterns += var.urls

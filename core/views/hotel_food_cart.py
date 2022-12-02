@@ -49,17 +49,43 @@ class Cart_List(ListAPIView):
     serializer_class = cart_ser
 
     def get_queryset(self):
-        #user = User.objects.get(user = self.request.user)
         return Cart.objects.filter(customer =  self.request.user)
-    
 
-class Add_Cart(ModelViewSet):
+        
+class Cart_Detail_Delete(RetrieveDestroyAPIView):
     queryset = Cart.objects.all()
     serializer_class = cart_ser
-    
+
+    def get_queryset(self):
+        #user = User.objects.get(user = self.request.user)
+        return Cart.objects.filter(customer =  self.request.user)  
+
+
+        
+from django.db.models import Q
+class Add_Cart(ModelViewSet):
+    queryset = Cart.objects.all()   
     def perform_create(self, serializer):
-           print(">>>>>>>>>>>>>", self.request.user.username)
-           serializer.save(customer =str(self.request.user.username))
+        my_dict = dict(self.request.data)
+        get_food_id = my_dict['recipes'][0]
+        quantity = my_dict['quantity'][0]
+        get_food_opj = Food.objects.get(id = int(get_food_id))
+        try:
+            var = Cart.objects.get(recipes =get_food_opj.id) 
+            var.quantity = int(quantity)
+            #var.price = get_food_opj.price
+            var.save()
+            print(">>>>>>>>>>> Update <<<<<<<<<<<<<")
+        except:
+            var = Cart.objects.create(
+                customer = self.request.user.username,
+                recipes = get_food_opj, 
+                quantity = quantity, 
+                price = get_food_opj.price, 
+                image =get_food_opj.image
+            )
+            print(">>>>>>>>>>> Create <<<<<<<<<<<<<")
+            
         
     def get_queryset(self):
         return Cart.objects.filter(customer = self.request.user)
@@ -69,9 +95,5 @@ class Add_Cart(ModelViewSet):
         if self.request.method == "POST":
             return Add_To_Cart_ser 
         return cart_ser
-    # def perform_update(self, serializer):
-    #     print(self.request.user)    
-    #     ak = serializer.save(customer = self.request.user)
-    #     print('}}}}}}}}}}}}}}}}}}}}}}}}}',ak)
-    #     return ak
+    
        

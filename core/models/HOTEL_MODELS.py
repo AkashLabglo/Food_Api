@@ -61,7 +61,7 @@ class Cart(Model):
     )
     # ----------------> The Module used for only this TB     
     from django.contrib.auth.models import User
-
+    zipcode = None
     image = ImageField(upload_to = "Pictures", null = True)
     customer = CharField(max_length=150, null = False, blank = False)
     #customer = ForeignKey(User, on_delete=CASCADE)
@@ -72,5 +72,6 @@ class Cart(Model):
 
     def __str__(self):
         return "{},{}".format(self.customer, self.recipes)
+
 
 
